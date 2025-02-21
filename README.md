@@ -2,7 +2,8 @@
 
 A Chrome extension that enhances GitHub organizations with customizable repository grouping functionality.
 
-<img width="1599" alt="image" src="https://github.com/user-attachments/assets/d365a0bc-2ba5-4666-afbb-d16a1e00ae81" />
+<img width="1105" alt="image" src="https://github.com/user-attachments/assets/d71693e8-71bb-42a7-b93f-63c9968f6e5c" />
+
 
 
 
