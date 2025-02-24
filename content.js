@@ -121,7 +121,7 @@ function toggleGroupsSideBar() {
 /**
  * This function creates a new group of repositories.
  * It prompts the user to enter a group name and saves
- * the group to storage.
+ * the group to localStorage.
  * 
  * @returns {void}
  */
@@ -129,9 +129,68 @@ function createNewGroup() {
     // Implementation for creating a new group
     const groupName = prompt('Enter group name:');
     if (!groupName) return;
+
+    // Save a new group to localStorage and update the counter
+    const saveGroupToStorage = (groupName) => {
+
+        // Update the groups UI to display all saved groups
+        const updateGroupsUI = () => {
+            const groupsList = document.querySelector('.groups-list');
+            if (!groupsList) return;
+
+            chrome.storage.sync.get(['githubRepoGroups'], (result) => {
+                const groups = result.githubRepoGroups || [];
+
+                groupsList.innerHTML = '';
+
+                if (groups.length === 0) {
+                    // Display a message if no groups exist
+                    groupsList.innerHTML = '<div class="no-groups-message p-3 text-center color-fg-muted">No groups created yet</div>';
+                    return;
+                }
+
+                groups.forEach(group => {
+                    const groupElement = document.createElement('div');
+                    groupElement.className = 'group-item p-2 border-bottom d-flex flex-justify-between';
+                    groupElement.innerHTML = `
+                <div class="group-name f5">${group.name}</div>
+                <div class="group-actions">
+                    <span class="repo-count Counter">${group.repositories.length}</span>
+                </div>
+            `;
+
+                    groupElement.addEventListener('click', () => {
+                        alert('Display repositories in group');
+                        // @AymKh
+                        // Implement this to display repositories in the group
+                    });
+
+                    groupsList.appendChild(groupElement);
+                });
+            });
+        }
+
+        chrome.storage.sync.get(['githubRepoGroups'], (result) => {
+            const existingGroups = result.githubRepoGroups || [];
+
+            const newGroup = {
+                id: 'MAAK-CORP-' + Date.now(),
+                name: groupName,
+                repositories: [],
+                createdAt: new Date().toISOString()
+            };
+
+            existingGroups.push(newGroup);
+
+            chrome.storage.sync.set({ 'githubRepoGroups': existingGroups }, () => {
+                document.getElementById('groups-counter').textContent = existingGroups.length;
+                updateGroupsUI();
+            });
+        });
+    }
+
+    saveGroupToStorage(groupName);
 }
-
-
 
 
 // ******** Initialize the extension ********
